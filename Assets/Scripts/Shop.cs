@@ -1,7 +1,16 @@
 using UnityEngine;
 
 public class Shop : MonoBehaviour {
-
+	public static Shop instance;
+		void Awake ()
+	{
+		if (instance != null)
+		{
+			Debug.LogError("More than one shop in scene!");
+			return;
+		}
+		instance = this;
+	}
 	public TurretBlueprint standardTurret;
 	public TurretBlueprint missileLauncher;
 	public TurretBlueprint laserBeamer;

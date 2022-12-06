@@ -13,6 +13,11 @@ public class Generator : MonoBehaviour
     public GameObject path;
     public List<Vector3> paths;
     public List<Vector3> forbiddens;
+
+    public static List<GameObject> node_list;
+    public static int node_count;
+    public static List<GameObject> path_list;
+    public static int path_count;
     
 
     // Start is called before the first frame update
@@ -29,6 +34,8 @@ public class Generator : MonoBehaviour
 
     public void Generate()
     {   
+        node_list = new List<GameObject>();
+        path_list = new List<GameObject>();
         Vector3 startPos;
         Vector3 lastWaypoint;
         startPos = spawnPoint.transform.position;
@@ -40,6 +47,16 @@ public class Generator : MonoBehaviour
         GetPath();
         PutTiles();
         
+    }
+
+    public List<GameObject> GetNodeList()
+    {
+        return node_list;
+    }
+
+    public List<GameObject> GetPathList()
+    {
+        return path_list;
     }
 
     public bool checkEnd(){
@@ -116,15 +133,19 @@ public class Generator : MonoBehaviour
     }
 
     public void PutTiles(){
+        node_count = 0;
         for (int i = 0; i <= 15; i ++){
             for (int j = 0; j >= -15; j--){
                 if (paths.Contains(new Vector3(i * 5, 0, j * 5))){
                     GameObject path_ = Instantiate(path, new Vector3(i * 5, 0, j * 5), new Quaternion(0,0,0,0)) as GameObject;
                     path_.transform.parent = GameObject.Find("Environment").transform;
+                    //path_list.Add(path_);
                 }
                 else{
                     GameObject node_ = Instantiate(node, new Vector3(i * 5, 0, j * 5), new Quaternion(0,0,0,0)) as GameObject;
                     node_.transform.parent = GameObject.Find("Nodes").transform;
+                    node_.tag = "NODE";
+                    //node_list.Add(node_);
                 }
             }
         }
