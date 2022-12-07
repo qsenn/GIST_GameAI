@@ -29,20 +29,21 @@ public class Agent : MonoBehaviour
         timer += Time.deltaTime;
         if(timer > waitingTime)
         {
+            BestNode();
+            //BuildTower(BestNode());
             
-            List<Node> node_list = GetNodes();
-            
+            /*
+            //build standard turret at (random) node
             if (PlayerStats.Money >= 100)
             {
-                //build turret at (random) node
-                //노드를 선택해야 함
+                
+                //List<Node> node_list = GetNodes();
                 //BuildTower(RandomNode(node_list));
-                BuildTower(BestNode());
+                
             }
-            
+            */
             Debug.Log($"Agent running!");
             timer = 0;
-            //PlayerStats.Money += 100;
         }
         
     }
@@ -52,10 +53,8 @@ public class Agent : MonoBehaviour
         return node_list[Random.Range(0, node_list.Count)];
     }
 
-    public Node BestNode()
+    public void BestNode()
     {
-        int best_score = 0;
-        Point best_point = new Point(-1, -1);
         int[,] current_board = GetBoard();
 
         for (int i=0; i < 16; i++)
@@ -87,22 +86,37 @@ public class Agent : MonoBehaviour
             }
         }
 
-        //PrintBoard(evaluated_board);
-        for (int i=0; i < 16; i++)
+        PrintBoard(evaluated_board);
+
+        int best_score = 1;
+        Point best_point = new Point(-1, -1);
+        List<Point> best_point_list = new List<Point>();
+        for (int i=0; i<16; i++)
         {
             for (int j=0; j<16; j++)
             {
-                if (best_score < evaluated_board[i, j])
+                if (best_score == evaluated_board[i, j])
                 {
+                    Point new_point = new Point(i, j);
+                    best_point = new_point;
+                    best_point_list.Add(new_point);
+                }
+                else if (best_score < evaluated_board[i, j])
+                {
+                    best_point_list.Clear();
+                    Point new_point = new Point(i, j);
+                    best_point = new_point;
+                    best_point_list.Add(best_point);
                     best_score = evaluated_board[i, j];
-                    best_point.x = i;
-                    best_point.y = j;
                 }
             }
         }
-        // 빌드할 곳을 찾은 경우 반환
-        if (best_point.x != -1)
-            return PointToNode(best_point);
+        // 빌드할 곳을 찾은 경우 빌드하고 종료
+        if (best_point_list.Any())
+        {
+            BuildTower(PointToNode(best_point_list[Random.Range(0, best_point_list.Count)]));
+            return;
+        }
         
         // 그렇지 못한 경우 한칸 넓혀서 탐색
         /*
@@ -116,18 +130,17 @@ public class Agent : MonoBehaviour
             {
                 if (evaluated_board[i, j] == -1)
                 {
-                    //업그레이드 (i,j) -> 60원이니까 호출됐을 경우 실행이 가능하긴함... 따로 빼낼 것.
+                    //업그레이드 (i,j)
                     best_point.x = i;
                     best_point.y = j;
                     
                     evaluated_board[i, j] = -2;
                     PointToNode(best_point).UpgradeTurret();
                     Debug.Log($"Upgrade and Set Score -2 to point( {best_point.x}, {best_point.y} )");
-                    return null;
+                    return;
                 }
             }
         }
-        return null;
     }
 
     public List<Node> GetNodes()
@@ -229,13 +242,22 @@ public class Agent : MonoBehaviour
         switch (type)
         {
             case 1:
-                _node.BuildTurret(shop.standardTurret);
+                if (PlayerStats.Money >= 100)
+                    _node.BuildTurret(shop.standardTurret);
+                else
+                    return;
                 break;
             case 2:
-                _node.BuildTurret(shop.missileLauncher);
+                if (PlayerStats.Money >= 250)
+                    _node.BuildTurret(shop.missileLauncher);
+                else
+                    return;
                 break;
             case 3:
-                _node.BuildTurret(shop.laserBeamer);
+                if (PlayerStats.Money >= 350)
+                    _node.BuildTurret(shop.laserBeamer);
+                else
+                    return;
                 break;
         }
         Point builtat = NodeToPoint(_node);
