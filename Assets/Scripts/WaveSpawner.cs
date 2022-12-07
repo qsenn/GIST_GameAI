@@ -82,21 +82,24 @@ public class WaveSpawner : MonoBehaviour {
 	}
 
 	public Wave GenerateWave(){
+		float pathLength = Waypoints.points.Length / 60f;
+		Debug.Log(pathLength);
 		int rand = Random.Range(0,3);
 		Wave wave = new Wave(); 
 		if (rand == 0){
 			wave.enemy = Resources.Load<GameObject>("Enemies/Simple/Enemy_Simple");
-			wave.count = (int)System.Math.Round(2.5 * PlayerStats.TotalBudget / 100);
+			wave.count = (int)(pathLength * (System.Math.Round(3.0 * PlayerStats.TotalBudget / 100) - (PlayerStats.startLives - PlayerStats.Lives) * 2));
+
 			wave.rate = 1 * (PlayerStats.TotalBudget) / 100;
 		}
 		else if (rand == 1){
 			wave.enemy = Resources.Load<GameObject>("Enemies/Fast/Enemy_Fast");
-			wave.count = (int)System.Math.Round(5.0 * PlayerStats.TotalBudget / 100);
+			wave.count = (int)(pathLength * (System.Math.Round(4.5 * PlayerStats.TotalBudget / 100) - (PlayerStats.startLives - PlayerStats.Lives) * 3));
 			wave.rate = 1 * (PlayerStats.TotalBudget) / 100;
 		}
 		else if (rand == 2){
 			wave.enemy = Resources.Load<GameObject>("Enemies/Tough/Enemy_Tough");
-			wave.count = (int)System.Math.Round(1.5 * PlayerStats.TotalBudget / 100);
+			wave.count = (int)(pathLength * (System.Math.Round(1.5 * PlayerStats.TotalBudget / 100) - (PlayerStats.startLives - PlayerStats.Lives) * 1));
 			wave.rate = 1 * (PlayerStats.TotalBudget) / 200;
 		}
 		

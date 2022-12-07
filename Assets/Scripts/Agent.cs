@@ -40,7 +40,7 @@ public class Agent : MonoBehaviour
                 BuildTower(BestNode());
             }
             
-            Debug.Log($"Agent running!");
+            //Debug.Log($"Agent running!");
             timer = 0;
             //PlayerStats.Money += 100;
         }

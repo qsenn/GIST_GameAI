@@ -209,7 +209,7 @@ public class Generator : MonoBehaviour
                     continue;
                 }
                 waypoints_num = Random.Range(5, ((int)lastWaypoint.x / 5));
-                Debug.Log(waypoints_num);
+                //Debug.Log(waypoints_num);
                 for (int j = 0; j<waypoints_num; j++){
                     lastWaypoint.x -= 5;
                     if(forbiddens.Contains(lastWaypoint)){
