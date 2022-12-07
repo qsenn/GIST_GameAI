@@ -41,8 +41,9 @@ public class Agent : MonoBehaviour
                 //BuildTower(RandomNode(node_list));
                 
             }
-            */
-            Debug.Log($"Agent running!");
+
+            //Debug.Log($"Agent running!");
+
             timer = 0;
         }
         
